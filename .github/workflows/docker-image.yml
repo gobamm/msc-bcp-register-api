@@ -17,7 +17,7 @@ jobs:
     - name: Build the Docker image
       run: |
         cd src 
-        docker build . --file Dockerfile --tag ghcr.io/bcp-dev-team/msc-bcp-register-api:latest
+        docker build . --file Dockerfile --tag ghcr.io/gobamm/msc-bcp-register-api:latest
 #        docker build . --file Dockerfile --tag ghcr.io/bcp-dev-team/msc-bcp-register-api:$(date +%s)
 #        docker tag ghcr.io/bcp-dev-team/msc-bcp-register-api:$(date +%s) ghcr.io/bcp-dev-team/msc-bcp-register-api:latest
 
@@ -31,4 +31,4 @@ jobs:
 
    # Push the Docker image
     - name: Push Docker image
-      run: docker push ghcr.io/bcp-dev-team/msc-bcp-register-api:latest
+      run: docker push ghcr.io/gobamm/msc-bcp-register-api:latest
