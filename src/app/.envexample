@@ -1,0 +1,10 @@
+DATABASE_USERNAME="issoadmin"
+DATABASE_PASSWORD="Fyod@B8#8bSs"
+DATABASE_HOST="172.19.108.57"
+DATABASE_SCHEMA="MY_BCP_DB"
+OTP_URL="https://bcp-otp-service.whiteglacier-3cbdf1a0.southeastasia.azurecontainerapps.io"
+AUTH_URL="https://bcp-auth-service.whiteglacier-3cbdf1a0.southeastasia.azurecontainerapps.io"
+#OTP_URL="http://127.0.0.1:8082"
+#AUTH_URL="http://127.0.0.1:8081"
+
+MIDDLE_WARE_URL="https://bcpmiddlewaredev.bangchak.co.th/bcpmiddlewareapiqa"
