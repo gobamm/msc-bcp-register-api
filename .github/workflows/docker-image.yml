@@ -35,8 +35,7 @@ jobs:
 
    # Push the Docker image
     - name: Push Docker image
-<<<<<<< HEAD
-      run: docker push ghcr.io/bcp-dev-team/msc-bcp-register-api:latest
+      run: docker push ghcr.io/gobamm/msc-bcp-register-api:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -80,8 +79,4 @@ jobs:
       with:
         action: deploy
         manifests: ${{ steps.bake.outputs.manifestsBundle }}
-        images: |
-          ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
-=======
-      run: docker push ghcr.io/gobamm/msc-bcp-register-api:latest
->>>>>>> 2b85dca38509ef5ef5aa9c1a2905bca5b0861376
+
