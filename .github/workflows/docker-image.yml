@@ -5,10 +5,11 @@ env:
   KUSTOMIZE_PATH: "your-kustomize-path"
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
 
 permissions:
   id-token: write
@@ -76,7 +77,7 @@ jobs:
         renderEngine: "kustomize"
         kustomizationPath: ${{ env.KUSTOMIZE_PATH }}
         kubectl-version: latest
-        id: bake
+      id: bake
 
     # Deploys application based on manifest files from previous step
     - name: Deploy application
