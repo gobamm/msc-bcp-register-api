@@ -3,8 +3,5 @@ resources:
   - deployment.yaml
   - service.yaml
 
-commonLabels:
-  app: msc-bcp-register-api
-
 # Optionally, define name prefixes or suffixes
 namePrefix: base-
