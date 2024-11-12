@@ -1,5 +1,8 @@
 resources:
   - ../../base
 
-patchesStrategicMerge:
-  - deployment-patch.yaml
+patches:
+  - path: deployment-patch.yaml  # Path to your patch file
+    target:
+      kind: Deployment
+      name: msc-bcp-register-api  # Name of the deployment you want to patch

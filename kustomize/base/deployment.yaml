@@ -2,7 +2,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: bcp-dev
   name: msc-bcp-register-api
   labels:
     app: msc-bcp-register-api
