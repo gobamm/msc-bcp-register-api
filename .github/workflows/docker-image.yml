@@ -64,8 +64,8 @@ jobs:
     - name: Get K8s context
       uses: azure/aks-set-context@v3
       with:
-        resource-group: ${{ env.RESOURCE_GROUP }}
-        cluster-name: ${{ env.CLUSTER_NAME }}
+        resource-group: ${{ vars.RESOURCE_GROUP }}
+        cluster-name: ${{ vars.CLUSTER_NAME }}
         admin: 'false'
         use-kubelogin: 'true'
 
@@ -74,7 +74,7 @@ jobs:
       uses: azure/k8s-bake@v2
       with:
         renderEngine: "kustomize"
-        kustomizationPath: ${{ env.KUSTOMIZE_PATH }}
+        kustomizationPath: ${{ vars.KUSTOMIZE_PATH }}
         kubectl-version: latest
       id: bake
 
