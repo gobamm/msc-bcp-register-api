@@ -2,7 +2,7 @@ name: Docker Image CI
 
 env:
   CLUSTER_NAME: "bcp-devsecops-dev"
-  KUSTOMIZE_PATH: "./kustomize"
+#  KUSTOMIZE_PATH: "./kustomize"
   RESOURCE_GROUP: "DevSecOps-Dev"
 
 on:
