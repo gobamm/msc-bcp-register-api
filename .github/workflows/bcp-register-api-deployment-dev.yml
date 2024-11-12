@@ -1,10 +1,5 @@
 name: Build & Deploy bcp-register-api(dev)
 
-env:
-  CLUSTER_NAME: "bcp-devsecops-dev"
-#  KUSTOMIZE_PATH: "./kustomize"
-  RESOURCE_GROUP: "DevSecOps-Dev"
-
 on:
   workflow_dispatch:
 #  push:
