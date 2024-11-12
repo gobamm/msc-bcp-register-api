@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: msc-bcp-register-api
-          image: msc-bcp-register-api:latest  # Replace with the actual image repository and tag
+          image: ghcr.io/gobamm/msc-bcp-register-api:latest  # Replace with the actual image repository and tag
           ports:
             - containerPort: 3000
 

@@ -9,5 +9,5 @@ spec:
     spec:
       containers:
         - name: msc-bcp-register-api
-          image: msc-bcp-register-api:latest  # Use a development-specific image tag
+          image: ghcr.io/gobamm/msc-bcp-register-api:latest  # Use a development-specific image tag
 
