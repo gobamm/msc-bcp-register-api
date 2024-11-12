@@ -13,8 +13,9 @@ on:
 #    branches: [ "main" ]
 
 permissions:
-  id-token: write
-  contents: read
+   id-token: write
+   contents: read
+   actions: read
 
 jobs:
 
@@ -86,5 +87,6 @@ jobs:
       uses: Azure/k8s-deploy@v4
       with:
         action: deploy
+        namespace: bcp-register
         manifests: ${{ steps.bake.outputs.manifestsBundle }}
 
