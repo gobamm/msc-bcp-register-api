@@ -1,0 +1,15 @@
+# k8s/base/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: msc-bcp-register-api
+  labels:
+    app: msc-bcp-register-api
+spec:
+  type: LoadBalancer
+  selector:
+    app: msc-bcp-register-api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000

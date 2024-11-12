@@ -1,0 +1,24 @@
+# k8s/base/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: bcp-dev
+  name: msc-bcp-register-api
+  labels:
+    app: msc-bcp-register-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: msc-bcp-register-api
+  template:
+    metadata:
+      labels:
+        app: msc-bcp-register-api
+    spec:
+      containers:
+        - name: msc-bcp-register-api
+          image: msc-bcp-register-api:latest  # Replace with the actual image repository and tag
+          ports:
+            - containerPort: 3000
+
