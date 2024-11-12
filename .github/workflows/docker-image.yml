@@ -74,7 +74,7 @@ jobs:
       uses: azure/k8s-bake@v3
       with:
         renderEngine: "kustomize"
-        kustomizationPath: ${{ vars.KUSTOMIZE_PATH }}
+#        kustomizationPath: ${{ vars.KUSTOMIZE_PATH }}
         kubectl-version: latest
       id: bake
 
