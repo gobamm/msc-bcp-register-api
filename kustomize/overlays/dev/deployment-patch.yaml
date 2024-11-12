@@ -2,7 +2,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: bcp-register
   name: msc-bcp-register-api  # Must match the name in the base deployment.yaml
 spec:
   replicas: 1  # Reduce replicas for the dev environment  

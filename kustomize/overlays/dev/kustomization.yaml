@@ -1,6 +1,8 @@
 resources:
   - ../../base
 
+namespace: bcp-register  # Specify the desired namespace here
+
 patches:
   - path: deployment-patch.yaml  # Path to your patch file
     target:
