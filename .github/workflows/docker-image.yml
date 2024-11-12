@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build & Deploy bcp-register-api(dev)
 
 env:
   CLUSTER_NAME: "bcp-devsecops-dev"
