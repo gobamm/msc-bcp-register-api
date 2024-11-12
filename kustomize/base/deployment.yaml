@@ -2,6 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: bcp-register
   name: msc-bcp-register-api
   labels:
     app: msc-bcp-register-api
@@ -20,4 +21,7 @@ spec:
           image: msc-bcp-register-api:latest  # Replace with the actual image repository and tag
           ports:
             - containerPort: 3000
+            
+      imagePullSecrets:
+        - name: ghcr-secret  # Referencing the secret created for GHCR access
 
