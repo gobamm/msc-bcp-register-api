@@ -1,8 +1,9 @@
 name: Docker Image CI
 
 env:
-  CLUSTER_NAME: "your-cluster-name"
+  CLUSTER_NAME: "bcp-devsecops-dev"
   KUSTOMIZE_PATH: "your-kustomize-path"
+  RESOURCE_GROUP: "DevSecOps-Dev"
 
 on:
   workflow_dispatch:
