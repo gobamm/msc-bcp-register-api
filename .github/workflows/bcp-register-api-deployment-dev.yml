@@ -30,10 +30,19 @@ jobs:
         VALIDATE_PYTHON: true
         FILTER_REGEX_INCLUDE: .*\.(py)$
         GITHUB_TOKEN: ${{ secrets.ORG_PAT }}
+        LOG_FILE: /tmp/super-linter.log  # Specify the log file location        
       continue-on-error: true
 
+    - name: Upload Linter Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: linter-results
+        path: /tmp/super-linter.log
+    
     - name: Run Unit Tests
-      run: pytest --cov=src tests/
+      run: |
+        pip install pytest pytest-cov 
+        pytest --cov=src tests/
 
     - name: Build the Docker image
       run: |
