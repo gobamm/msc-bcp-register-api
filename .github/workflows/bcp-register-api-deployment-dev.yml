@@ -67,7 +67,7 @@ jobs:
       run: |
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip
         unzip sonar-scanner-cli-6.2.1.4610-linux-x64.zip
-        mv sonar-scanner-cli-6.2.1.4610-linux-x64 sonar-scanner
+        mv sonar-scanner-6.2.1.4610-linux-x64 sonar-scanner
         echo "export PATH=$PWD/sonar-scanner/bin:$PATH" >> $GITHUB_ENV
 
     # Run SonarQube analysis
