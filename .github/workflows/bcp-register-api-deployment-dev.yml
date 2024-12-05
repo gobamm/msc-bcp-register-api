@@ -126,7 +126,7 @@ jobs:
       run: docker push ghcr.io/gobamm/msc-bcp-register-api:latest
 
 
-  deploy:
+  deploy-dev:
     needs: build-and-test
     runs-on: ubuntu-latest
 
@@ -170,4 +170,25 @@ jobs:
         action: deploy
         namespace: bcp-register
         manifests: ${{ steps.bake.outputs.manifestsBundle }}
+  
+  dast-and-test:
+    needs: deploy-dev
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run API Tests in UAT
+        run: |
+          newman run postman_collection.json --environment postman_uat.json --reporters cli
+        continue-on-error: true
+
+      - name: Run OWASP ZAP
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          target: 'https://uat-env.example.com'
+          artifact_name: zap-report.html
+        continue-on-error: true
+      
+      - name: Notify Team of DAST Results
+        if: failure()
+        run: echo "Send email or Microsoft Teams notification for DAST failure."
 
