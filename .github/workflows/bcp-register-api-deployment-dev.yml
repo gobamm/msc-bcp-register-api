@@ -16,16 +16,22 @@ jobs:
 
     runs-on: ubuntu-latest
 
-
-
     steps:
     - uses: actions/checkout@v4
+
+    - name: Check GITHUB_TOKEN Scope
+      run: |
+        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        https://api.github.com
 
     - name: Run Linter
       uses: github/super-linter@v4
       env:
         VALIDATE_PYTHON: true
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Unit Tests
+      run: pytest --cov=src tests/
 
     - name: Build the Docker image
       run: |
