@@ -12,7 +12,7 @@ permissions:
 
 jobs:
 
-  build-and-test:
+  sast:
 
     runs-on: ubuntu-latest
 
@@ -43,6 +43,68 @@ jobs:
       run: |
         pip install pytest pytest-cov 
         pytest --cov=src tests/
+      continue-on-error: true
+
+      
+    # Set up Java (required for SonarQube Scanner)
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: 17
+
+    # Cache SonarQube scanner
+    - name: Cache SonarQube scanner
+      uses: actions/cache@v3
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar-cache
+        restore-keys: |
+          ${{ runner.os }}-sonar-cache
+
+    # Download and install SonarQube Scanner CLI
+    - name: Install SonarQube Scanner
+      run: |
+        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip
+        unzip sonar-scanner-cli-6.2.1.4610-linux-x64.zip
+        mv sonar-scanner-cli-6.2.1.4610-linux-x64 sonar-scanner
+        echo "export PATH=$PWD/sonar-scanner/bin:$PATH" >> $GITHUB_ENV
+
+    # Run SonarQube analysis
+    - name: Run SonarQube Scanner
+      env:
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        sonar-scanner \
+        -Dsonar.projectKey=my_project_key \
+        -Dsonar.organization=my_organization \
+        -Dsonar.sources=. \
+        -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+        -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      continue-on-error: true
+
+    # Quality Gate status check
+    - name: Quality Gate Check
+      env:
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        PROJECT_STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "${{ secrets.SONAR_HOST_URL }}/api/qualitygates/project_status?projectKey=my_project_key" | jq -r '.projectStatus.status')
+        echo "Quality Gate Status: $PROJECT_STATUS"
+        if [ "$PROJECT_STATUS" != "OK" ]; then
+          echo "Quality Gate failed. Stopping the pipeline."
+          exit 1
+        fi
+      continue-on-error: true
+
+  build-and-test:
+    
+    needs: sast
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
 
     - name: Build the Docker image
       run: |
