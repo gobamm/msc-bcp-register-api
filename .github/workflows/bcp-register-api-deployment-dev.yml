@@ -2,10 +2,8 @@ name: Build & Deploy bcp-register-api(dev)
 
 on:
   workflow_dispatch:
-#  push:
-#    branches: [ "main" ]
-#  pull_request:
-#    branches: [ "main" ]
+  push:
+    branches: [ "develop" ]
 
 permissions:
    id-token: write
@@ -14,12 +12,21 @@ permissions:
 
 jobs:
 
-  build-image:
+  build-and-test:
 
     runs-on: ubuntu-latest
 
+
+
     steps:
     - uses: actions/checkout@v4
+
+    - name: Run Linter
+      uses: github/super-linter@v4
+      env:
+        VALIDATE_PYTHON: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build the Docker image
       run: |
         cd src 
@@ -41,7 +48,7 @@ jobs:
 
 
   deploy:
-    needs: build-image
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
