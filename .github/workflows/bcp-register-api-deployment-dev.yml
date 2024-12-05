@@ -21,14 +21,14 @@ jobs:
 
     - name: Check GITHUB_TOKEN Scope
       run: |
-        curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        curl -H "Authorization: token ${{ secrets.ORG_PAT }}" \
         https://api.github.com
 
     - name: Run Linter
       uses: github/super-linter@v4
       env:
         VALIDATE_PYTHON: true
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.ORG_PAT }}
 
     - name: Run Unit Tests
       run: pytest --cov=src tests/
