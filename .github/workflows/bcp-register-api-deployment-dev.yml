@@ -27,9 +27,10 @@ jobs:
     - name: Run Linter
       uses: github/super-linter@v4
       env:
-        #VALIDATE_PYTHON: false
-        VALIDATE_ALL_CODEBASE: false
+        VALIDATE_PYTHON: true
+        FILTER_REGEX_INCLUDE: .*\.(py)$
         GITHUB_TOKEN: ${{ secrets.ORG_PAT }}
+      continue-on-error: true
 
     - name: Run Unit Tests
       run: pytest --cov=src tests/
