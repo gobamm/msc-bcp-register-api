@@ -26,10 +26,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Check GITHUB_TOKEN Scope
+    - name: Check Event Scope
       run: |
-        curl -H "Authorization: token ${{ secrets.ORG_PAT }}" \
-        https://api.github.com
         echo "Triggered by tag: $GITHUB_REF_NAME"
         echo "Tag Ref Name: $GITHUB_REF"
         echo "Event Name: $GITHUB_EVENT_NAME"
