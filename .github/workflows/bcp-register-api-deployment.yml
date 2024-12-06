@@ -2,11 +2,11 @@ name: Build & Deploy bcp-register-api
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "develop" ]
+  #push:
+  #  branches: [ "develop" ]
 
   pull_request:
-    branches: ["release", "main"]
+    branches: ["release", "main","develop"]
      
   release:
     types: [published] # Trigger on tag-based pull request to main branch
@@ -133,6 +133,7 @@ jobs:
 
 
   deploy-dev:
+    if: github.event_name == 'pull_request' && github.base_ref == 'develop'
     needs: build-and-test
     runs-on: ubuntu-latest
     environment: Development
