@@ -2,14 +2,14 @@ name: Build & Deploy bcp-register-api
 
 on:
   workflow_dispatch:
-  #push:
-  #  branches: [ "develop" ]
+  push:
+    branches: [ "develop" ]
 
-  #pull_request:
-  #  branches: ["release", "main","develop"]
+  pull_request:
+    branches: ["release", "main","develop"]
      
-  #release:
-  #  types: [published] # Trigger on tag-based pull request to main branch
+  release:
+     types: [published] # Trigger on tag-based pull request to main branch
 
 
 permissions:
