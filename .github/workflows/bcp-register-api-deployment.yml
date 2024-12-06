@@ -1,9 +1,17 @@
-name: Build & Deploy bcp-register-api(dev)
+name: Build & Deploy bcp-register-api
 
 on:
   workflow_dispatch:
   push:
     branches: [ "develop" ]
+
+  pull_request:
+    branches:
+      - release
+  
+  release:
+    types: [published] # Trigger on tag-based pull request to main branch
+
 
 permissions:
    id-token: write
@@ -128,6 +136,7 @@ jobs:
   deploy-dev:
     needs: build-and-test
     runs-on: ubuntu-latest
+    environment: Development
 
     steps:
     - uses: actions/checkout@v4
@@ -170,9 +179,80 @@ jobs:
         namespace: bcp-register
         manifests: ${{ steps.bake.outputs.manifestsBundle }}
   
-  dast-and-test:
+
+  deploy-uat:
+    if: github.event_name == 'pull_request' && github.base_ref == 'release'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment: UAT
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    # Logs in with your Azure credentials
+    - name: Azure login
+      uses: azure/login@v2
+      with:
+       creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # Use kubelogin to configure your kubeconfig for Azure auth
+    - name: Set up kubelogin for non-interactive login
+      uses: azure/use-kubelogin@v1
+      with:
+       kubelogin-version: 'v0.0.25'
+
+    # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+    - name: Get K8s context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: ${{ vars.RESOURCE_GROUP }}
+        cluster-name: ${{ vars.CLUSTER_NAME }}
+        admin: 'false'
+        use-kubelogin: 'true'
+
+    # Runs Kustomize to create manifest files
+    - name: Bake deployment
+      uses: azure/k8s-bake@v3
+      with:
+        renderEngine: "kustomize"
+        kustomizationPath: ${{ vars.KUSTOMIZE_PATH }}
+        kubectl-version: latest
+      id: bake
+
+    # Deploys application based on manifest files from previous step
+    - name: Deploy application
+      uses: Azure/k8s-deploy@v4
+      with:
+        action: deploy
+        namespace: bcp-register
+        manifests: ${{ steps.bake.outputs.manifestsBundle }}
+
+  dast-and-test-dev:
     needs: deploy-dev
     runs-on: ubuntu-latest
+    environment: Development
+
+    steps:
+      - name: Run API Tests in DEV
+        run: |
+          newman run postman_collection.json --environment postman_dev.json --reporters cli
+        continue-on-error: true
+
+      - name: Run OWASP ZAP
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          target: ${{ vars.TARGET_URL }}
+          artifact_name: zap-report.html
+        continue-on-error: true
+      
+      - name: Notify Team of DAST Results
+        if: failure()
+        run: echo "Send email or Microsoft Teams notification for DAST failure."
+
+  dast-and-test-uat:
+    needs: deploy-uat
+    runs-on: ubuntu-latest
+    environment: UAT
 
     steps:
       - name: Run API Tests in UAT
@@ -183,7 +263,7 @@ jobs:
       - name: Run OWASP ZAP
         uses: zaproxy/action-full-scan@v0.12.0
         with:
-          target: 'https://uat-env.example.com'
+          target: ${{ vars.TARGET_URL }}
           artifact_name: zap-report.html
         continue-on-error: true
       
@@ -191,3 +271,71 @@ jobs:
         if: failure()
         run: echo "Send email or Microsoft Teams notification for DAST failure."
 
+  deploy-prod:
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' && startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    environment: Production
+
+    steps:
+      - uses: actions/checkout@v4
+    
+      # Logs in with your Azure credentials
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Use kubelogin to configure your kubeconfig for Azure auth
+      - name: Set up kubelogin for non-interactive login
+        uses: azure/use-kubelogin@v1
+        with:
+          kubelogin-version: 'v0.0.25'
+
+      # Retrieves your Azure Kubernetes Service cluster's kubeconfig file
+      - name: Get K8s context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ vars.RESOURCE_GROUP }}
+          cluster-name: ${{ vars.CLUSTER_NAME }}
+          admin: 'false'
+          use-kubelogin: 'true'
+
+      # Runs Kustomize to create manifest files
+      - name: Bake deployment
+        uses: azure/k8s-bake@v3
+        with:
+          renderEngine: "kustomize"
+          kustomizationPath: ${{ vars.KUSTOMIZE_PATH }}
+          kubectl-version: latest
+        id: bake
+
+      # Deploys application based on manifest files from previous step
+      - name: Deploy application
+        uses: Azure/k8s-deploy@v4
+        with:
+          action: deploy
+          namespace: bcp-register
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
+
+  dast-and-test-prod:
+    needs: deploy-prod
+    runs-on: ubuntu-latest
+    environment: Production
+        
+    steps:
+      - name: Run API Tests in UAT
+        run: |
+          newman run postman_collection.json --environment postman_uat.json --reporters cli
+        continue-on-error: true
+        
+      - name: Run OWASP ZAP
+        uses: zaproxy/action-full-scan@v0.12.0
+        with:
+          target: ${{ vars.TARGET_URL }}
+          artifact_name: zap-report.html
+        continue-on-error: true
+              
+      - name: Notify Team of DAST Results
+        if: failure()
+        run: echo "Send email or Microsoft Teams notification for DAST failure."
+        
