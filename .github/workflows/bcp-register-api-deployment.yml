@@ -6,7 +6,7 @@ on:
     branches: [ "develop" ]
 
   pull_request:
-    branches: ["release", "main","develop"]
+    branches: ["release", "develop"]
      
   release:
      types: [published] # Trigger on tag-based pull request to main branch
@@ -232,7 +232,7 @@ jobs:
         namespace: bcp-register
         manifests: ${{ steps.bake.outputs.manifestsBundle }}
       continue-on-error: true
-      
+
   dast-and-test-dev:
     needs: deploy-dev
     runs-on: ubuntu-latest
