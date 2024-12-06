@@ -1,0 +1,23 @@
+on:
+  release:
+    types: [published] # Trigger on tag-based pull request to main branch
+
+
+permissions:
+   id-token: write
+   contents: read
+   actions: read
+
+jobs:
+    
+
+    deploy-prd:
+        runs-on: ubuntu-latest
+        
+        steps:
+            - name: Validate Tag
+              run: |
+                echo "Triggered by tag: $GITHUB_REF_NAME"
+                echo "Tag Ref Name: $GITHUB_REF"
+                echo "Event Name: $GITHUB_EVENT_NAME"
+                echo "Base Ref: ${{ github.base_ref }}"
