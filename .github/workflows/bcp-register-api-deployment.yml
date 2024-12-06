@@ -2,8 +2,8 @@ name: Build & Deploy bcp-register-api
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "develop" ]
+  #push:
+  #  branches: [ "develop" ]
 
   pull_request:
     branches: ["release", "develop"]
