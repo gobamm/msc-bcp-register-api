@@ -30,6 +30,10 @@ jobs:
       run: |
         curl -H "Authorization: token ${{ secrets.ORG_PAT }}" \
         https://api.github.com
+        echo "Triggered by tag: $GITHUB_REF_NAME"
+        echo "Tag Ref Name: $GITHUB_REF"
+        echo "Event Name: $GITHUB_EVENT_NAME"
+        echo "Base Ref: ${{ github.base_ref }}"
 
     - name: Run Linter
       uses: github/super-linter@v4
